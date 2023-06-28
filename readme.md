@@ -281,6 +281,28 @@ docker push tarekmonjur/test-server:0.0.1
 <br>
 
 # Docker Compose:
+Its a tool that allow you to manage multiple containers.
+
+## Running backend project using docker compose:
+
+### First run mongodb service
+```
+cd backend
+docker-compose -d up mono
+```
+
+### Secondly build and run app service
+```
+cd backend
+docker-compose -d up app
+```
+
+### Check running containers
+```
+cd backend
+docker-compose ps
+```
+
 ## [Docker compose examples](https://github.com/tarekmonjur/docker-example)
 
 
