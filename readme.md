@@ -4,6 +4,14 @@ Docker uses image and containers to allow apps to run anywhere, consistently.
 
 <br />
 
+## Docker Main Components:
+* **Docker Image**
+* **Docker Container**
+* **Docker Volume**
+* **Docker Network**
+
+<br>
+
 # Container vs Virtual Machines:
 |                    Containers                  |                     Virtual Machines                         |
 |------------------------------------------------|--------------------------------------------------------------|
@@ -172,6 +180,7 @@ docker image ls -a
 ```
 docker image rm <image-id>
 docker rmi <image-id>
+docker rmi $(docker images | grep "<none>")
 ```
 
 <br>
