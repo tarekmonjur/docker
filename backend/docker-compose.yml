@@ -10,7 +10,7 @@ services:
     volumes:
       - ./src:/app/src
     ports:
-      - 3000:4000
+      - 3001:4000
     links:
       - mongo
 
