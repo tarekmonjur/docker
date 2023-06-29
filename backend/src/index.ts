@@ -20,9 +20,9 @@ routes(app);
 app.use(express.static('public'));
 
 app.get('/', (req: express.Request, res: express.Response) =>
-    res.send(`Node and express server is running on port ${PORT}.`)
+    res.send(`Node and express server is running on port ${process.env.PORT}.`)
 );
 
 app.listen(PORT, () =>
-    console.log(`your server is running on port ${PORT}`)
+    console.log(`your server is running on port ${process.env.PORT}`)
 );
