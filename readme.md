@@ -30,6 +30,9 @@ Docker uses image and containers to allow apps to run anywhere, consistently.
 # What is Container?
 A container is a sandboxed process on your machine that is isolated from all other processes on the host machine. A technology that bundles the code for an application and the configuration required to run the code itself in out unit.
 
+- **Containers use control groups and namespaces to package applications**
+- **Contrainers are created and managed by container runtimes and container engines**
+
 ## Creating container means
 A container is composed of two things that is acutally use kernel namespaces and cgroups, features that have been in Linux for a long time.
 
@@ -60,7 +63,7 @@ Docker uses control groups for -
 <br/>
 
 # What is Docker Image?
-### Images are the building blocks of the Docker world. You launch your containers from images. Images are the ”build” part of Docker’s life cycle. They are a layered format, using Union file systems, that are built step-by-step using a series of instructions. For example:
+### Images are the building blocks of the Docker world. You launch your containers from images. Container images are prepackaged filesystems for containers. Images are the ”build” part of Docker’s life cycle. They are a layered format, using Union file systems, that are built step-by-step using a series of instructions. For example:
 
 * Add a file.
 * Run a command.
@@ -72,6 +75,12 @@ You can consider images to be the ”source code” for your containers. They ar
 
 # Install Docker:
 Follow docker doc [here](https://docs.docker.com/desktop/install).
+
+## Where Configuration Files?
+- **/var/lib/docker:** containers, volumes, and metadata
+- **/var/lib/docker/overlay:** container volumes
+- **/var/lib/docker.sock:** the pipeline between docker client and docker engine
+- **/etc/docker/daemon.json:** docker engine configuration and other property like HTTP proxy and runtime configuration.
 
 ## How Docker Works:
 
@@ -264,6 +273,50 @@ docker run -it --name my-server -v $(pwd):/var/www/html -p 8080:80 --rm first-we
 
 <br>
 
+# Dockerfile:
+The dockerfile is a language for easily building container images. Dockerfile is the name of the language as well as the default name of the file that docker looks for when creating container images.
+Every docker file consist of a series of instructions.
+
+### Example:
+```
+FROM ubuntu
+LABEL maintainer="Tarek Monjur <engr.tarekmonjur@gmail.com>"
+USER root
+COPY ./entrypoint.bash /
+RUN apt -y update
+RUN apt -y install curl bash
+RUN chmod 755 /entrypoint.bash
+USER nobody
+ENTRYPOINT [ "/entrypoint.bash" ]
+```
+Docker runs each Dockerfile command in an `intermediate container` and saves the result as an image layer.
+[Here is the full example](https://github.com/tarekmonjur/docker/tree/master/first-image) of simple docker project.
+
+<br>
+
+## Exploring Dockerfile Command:
+
+### **FROM Command:**
+The FROM command describes the `base` image that is Dockerfile's image will be created from. This command must be the first command in the Dockerfile.
+```
+FROM $image:$tag as $name
+# like as
+FROM ubuntu
+# by choose tag
+FROM ubuntu:latest
+# by given name
+FROM ubuntu:latest as base
+```
+We can also use
+```
+FROM scratch
+```
+to create our own base image.
+
+
+
+<br>
+
 # Docker Hub:
 Dccker hub is docker image registry where we can push our image and use it later like other docker images.
 Go to [Docker HUB](https://hub.docker.com) and create a docker account.
@@ -308,6 +361,51 @@ docker-compose -d up app
 cd backend
 docker-compose ps
 ```
+
+### Running Frontend and Backend project using docker compose:
+```
+version: '3'
+
+services:
+  backend:
+    container_name: "docker-backend"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    working_dir: /app
+    command: npm run start-dev
+    depends_on:
+      - mongo
+    ports:
+      - 4001:4000
+    volumes:
+      - ./backend/:/app
+    environment:
+      PORT: 5000
+
+  mongo:
+    container_name: "docker-mongo"
+    image: mongo
+    volumes:
+      - ./backend/data:/data/db
+    ports:
+      - 27018:27017
+
+  frontend:
+    image: node:alpine
+    container_name: "dockder-frontend"
+    working_dir: /app
+    command: npm run start
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app  
+
+
+
+```
+
 ### [Docker compose examples](https://github.com/tarekmonjur/docker-example)
 
 <br>
