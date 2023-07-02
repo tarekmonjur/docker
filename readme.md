@@ -127,6 +127,12 @@ docker ps --all
 doker container ls -all
 ```
 
+### Show Formatting
+```
+docker container ls -a --format '{{.ID}}: {{.Image}}: \t{{.Status}}'
+docker container ls -a --format 'table {{.ID}}\t{{.Image}}\t{{.Command}}\t{{.Status}}'
+```
+
 ### Start container
 ```
 docker start container <container-id>
@@ -302,7 +308,31 @@ docker-compose -d up app
 cd backend
 docker-compose ps
 ```
-
 ### [Docker compose examples](https://github.com/tarekmonjur/docker-example)
+
+<br>
+
+# Docker Swarm
+* **Its a tool that installed and enabled by default with Docker**
+* **Allow to manage clusters of nodes**
+* **Virtual or physical machines are nodes**
+* **Features such as load balancing**
+* **A cluster contains nodes and nodes contains containers**
+
+## Start Swarm:
+### Run swarm init commond
+```
+docker swarm init
+```
+
+### Swarm Stack
+```
+docker stack deploy -c docker-compose.yml my-test-stack
+```
+
+### Create service from image
+```
+docker servcie create --replicas 1 --name servicename <image> ping docker.com
+```
 
 

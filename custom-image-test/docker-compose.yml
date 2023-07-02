@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  backend:
+    container_name: "test-backend"
+    image: tarekmonjur/test-backend:0.1.1
+    command: npm run start
+    depends_on:
+      - mongo
+    ports:
+      - "4001:4000"
+    # volumes:
+    #   - ./dist:/app/src
+    # deploy:
+    #   mode: replicated
+    #   replicas: 2
+    environment:
+      PORT: 5000
+
+  mongo:
+    container_name: "docker-mongo"
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - 27018:27017
+
+  # frontend:
+  #   image: node:alpine
+  #   container_name: "dockder-frontend"
+  #   working_dir: /app
+  #   command: npm run start
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./frontend:/app  
+
+
