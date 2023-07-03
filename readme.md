@@ -287,10 +287,36 @@ RUN apt -y update
 RUN apt -y install curl bash
 RUN chmod 755 /entrypoint.bash
 USER nobody
+EXPOSE 8080
 ENTRYPOINT [ "/entrypoint.bash" ]
 ```
 Docker runs each Dockerfile command in an `intermediate container` and saves the result as an image layer.
 [Here is the full example](https://github.com/tarekmonjur/docker/tree/master/first-image) of simple docker project.
+
+<br>
+
+## Build you first image from the Dockerfile:
+### Create a Dockerfile:
+```
+FROM nginx:latest
+COPY ./run.sh .
+RUN chmod 755 ./run.sh
+CMD [ "./run.sh" ]
+```
+### Run below command:
+```
+docker image build .
+```
+### Build image with tag/image name
+```
+docker image build -t first-image .
+```
+
+### Short build command
+```
+docker build -t tarekmonjur/first-image:latest .
+```
+[Here is the full example.](https://github.com/tarekmonjur/docker/tree/master/first-webserver)
 
 <br>
 
@@ -302,9 +328,9 @@ The FROM command describes the `base` image that is Dockerfile's image will be c
 FROM $image:$tag as $name
 # like as
 FROM ubuntu
-# by choose tag
+# Or by choose tag
 FROM ubuntu:latest
-# by given name
+# Or by given name
 FROM ubuntu:latest as base
 ```
 We can also use
@@ -313,6 +339,113 @@ FROM scratch
 ```
 to create our own base image.
 
+### **COPY Command:**
+Copy command copies/adds files and directories into docker image from provided context.
+```
+COPY $src-file $dest-file
+COPY $src-file $dest-dir
+COPY $src-dir $dest-dir
+# Like as
+COPY ./my-file.txt /app/my-file.txt
+COPY ./my-file.txt /app/
+COPY ./my-dir /app/
+COPY . ./app
+# Using Wildcard
+COPY ./assets/image-?.png /assets
+COPY ./assets/image* /assets
+```
+
+### **RUN Command:**
+Run command use for customize the docker image. Run command run shell command within temporary containers.
+```
+RUN apt -y install curl bash
+```
+
+### **ENTRYPOINT Command:**
+ENTRYPOINT configures container to run stuff, Basically its confiures the container image to run an application.
+```
+ENTRYPOINT ["put command here"]
+```
+ENTRYPOINT can't not be overwriten by container run. You can using shell form for entrypoint, But best option to use exec form like this.
+
+### **CMD Command:**
+CMD is very simillar to ENTRYPOINT. Configure container to run staff, also to run application on startup.
+```
+CMD ["put command here"]
+```
+```
+ENTRYPOINT ["/app/run.sh"]
+CMD ["--argument"]
+```
+CMD is the best suited for porviding default arguments an ENTRYPOINT. CMD can be overwriten by container run.
+
+## **ENV & ARG Command:**
+we can allow user to change and set values on the image build or container run time.
+```
+FROM ubuntu
+WORKDIR /app
+ARG curl_version=curl
+ENV port=8080
+RUN apt -y update
+RUN apt -y install "$curl_version" bash
+COPY . /app
+EXPOSE $port
+CMD [ "--argument" ]
+ENTRYPOINT [ "/app/run.sh" ]
+```
+
+### **Build Argument (ARG) Command:**
+Build argemtn are variables that we provide to docker build. We can set build arguments with the ARG instruction. ARG allows to set a variable at docker build time.
+```
+ARG curl_version=curl
+RUN apt -y install "$curl_version"
+```
+Set ARG variable with ```docker build``` with the ```--build-arg``` flag
+```
+docker build --build-arg curl_version="curl=7.8.0" -t my-test-image .
+```
+
+### **ENV Command:**
+ENV use to confiurges environment variables for containers started from the image.
+```
+docker run --name my-test -e port=8000 --rm my-test-image
+docker run --name my-test -env port=8000 --rm my-test-image
+```
+
+### Difference ENV vs ARG:
+* **ENV variables live with every containers - ARG variable do not**
+* **Can set ARG variables at build time - Can overwirte ENV variable at run time**
+* **Cann't overwrite ENV variables at build time**
+
+### **WORKDIR Command:**
+WORKDIR command allow you to confiurge a working directory for run commands.
+Can be use multiple times to change the working directory while building image.
+The last working directory will be used by containers.
+```
+WORKDIR /
+RUN PWD
+WORKDIR /app
+```
+
+### **USER Command:**
+Set the user to be used for RUN commands, can be used multiple time and the last user will be used by containers.
+```
+USER root
+RUN apt -y update && apt -y install curl bash
+RUN useradd -p secret newuser
+USER newuser
+ENTRYPOINT [ "/app/run.sh"] 
+```
+
+### **EXPOSE Command:**
+Expose port that container created from image. 
+```
+EXPOSE 3000
+```
+
+<br>
+
+# Multi Stage Dockerfile:
 
 
 <br>
