@@ -561,7 +561,63 @@ docker push tarekmonjur/test-server:0.0.1
 <br>
 
 # Docker Compose:
-Its a tool that allow you to manage multiple containers.
+Docker compose is a markdown language/tool for developers to specify docker configurations as code. 
+Its a tool that allow you to manage multiple containers. Using docker compose instead of manually configure and initializing many individual containers, developers can simplify the process to running a single configuration file.
+
+## First Docker Compose Config:
+### Create a dockerfile:
+```
+FROM nginx:alpine
+COPY ./index.html /usr/share/nginx/html/
+EXPOSE 8080
+```
+
+### Create a docker compose config:
+```
+version: "3.9"
+services:
+  app: 
+    build: .
+    ports:
+      - 8080:80
+  db: 
+    image: "mysql"
+```
+
+### Then run the docker services by using.
+```
+docker-compose up
+```
+
+## Docker Compose Commands:
+Docker compose provide some basic commnads.
+
+### Up Command:
+* **Build** the image.
+* **Create** the containers.
+* **Start** the application.
+```
+docker-compose up
+```
+
+### Down Command:
+Stops containers and removes containers, networks, volumes, and images
+```
+docker-compose down
+```
+
+### Restart Command:
+Restart running containers.
+```
+docker-compose restart
+```
+
+### Stop Command:
+Stop running containers without removing them.
+```
+docker-compose stop
+```
+
 
 ## Running backend project using docker compose:
 
@@ -584,6 +640,7 @@ docker-compose ps
 ```
 
 ### Running Frontend and Backend project using docker compose:
+create a docker-compose.yaml file. YAML - Yet Another Markup Language.
 ```
 version: '3'
 
