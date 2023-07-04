@@ -63,7 +63,7 @@ Docker uses control groups for -
 <br/>
 
 # What is Docker Image?
-### Images are the building blocks of the Docker world. You launch your containers from images. Container images are prepackaged filesystems for containers. Images are the ”build” part of Docker’s life cycle. They are a layered format, using Union file systems, that are built step-by-step using a series of instructions. For example:
+Images are the building blocks of the Docker world. You launch your containers from images. Container images are prepackaged filesystems for containers. Images are the ”build” part of Docker’s life cycle. They are a layered format, using Union file systems, that are built step-by-step using a series of instructions. For example:
 
 * Add a file.
 * Run a command.
@@ -446,7 +446,21 @@ EXPOSE 3000
 <br>
 
 # Multi Stage Dockerfile:
+Multi-stage builds use intermediate images to produce smaller final images. Multi-stage builds can use multiple base image. Each group of commands under a base image is called a stage. You can copy files or directories from one stage to another stage by using `--from` COPY flag.
 
+```
+FROM ubuntu AS base
+ENV curl_bin="curl"
+RUN apt -y update && apt -y install "$curl_bin"
+RUN date >> '/tmp/date.txt'
+
+FROM bash
+COPY . /app
+COPY --from=base /tmp/date.txt /app/include/date.txt
+ENTRYPOINT [ "/usr/local/bin/bash", "/app/app.sh" ]
+CMD [ "--argument" ]
+```
+[Here is an example](https://github.com/tarekmonjur/docker/blob/master/backend/Dockerfile)
 
 <br>
 
