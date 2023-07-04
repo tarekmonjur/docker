@@ -247,7 +247,7 @@ docker exec --it <container-id> bash
 
 <br>
 
-## Container Name, Port & Volume:
+## Container Name & Port:
 buid an nginx image and run a web server using docker port
 
 ### Build docker image:
@@ -266,9 +266,34 @@ docker run -d --name my-server -p 8080:80 -e VERSION=v3 first-webserver/latest
 docker run -it --rm --name my-server -p 8080:80 -e VERSION=v3 first-webserver/latest
 ```
 
-### Share files using volume:
+## Container Volumes
+Volumes allow to save data from continer and share data with container. Docker uses the local volume driver by default. When a volume is into a container, docker transparently maps a folder into a mound point within the container. Docker managed create and present folder by the volume driver.
+
+### **See Volumes:**
 ```
-docker run -it --name my-server -v $(pwd):/var/www/html -p 8080:80 --rm first-webserver/latest
+docker volume ls
+```
+
+### **Create Volumes:**
+```
+docker volume create <volume-name>
+```
+
+### **Mounted Volume:**
+```
+docker run -it --name my-db -v <volume-name>:/data/db -p 27017:27017 --rm mongo/latest
+```
+```
+docker run -it --name my-db --mount 'type=volume,source=<volume-name>,destination=/data/db -p 27017:27017 --rm mongo/latest
+```
+
+### **Bind Mount Volume:**
+Biind mounts maps directories on computer to directories in containers.
+```
+docker run -it --name my-server --v $(pwd):/var/www/html -p 8080:80 --rm first-webserver/latest
+```
+```
+docker run -it --name my-server --mount 'type=bind,src="$(pwd)"/,target=/var/www/html -p 8080:80 --rm first-webserver/latest
 ```
 
 <br>
@@ -298,7 +323,7 @@ docker network inspect network-a
 
 ### **Create Container with Network:**
 ```
-docker container create --name container-a --net network-a --entrypoint sh curlimages/curl
+docker container create -it --name container-a --net network-a --entrypoint sh curlimages/curl
 ```
 
 ### **Create & Run Container with Network:**
@@ -309,6 +334,11 @@ docker container run -it --name container-b --net network-b --entrypoint sh curl
 ### **Connect Container with Network:**
 ```
 docker network connect network-a container-b
+```
+
+### **Publish Network Port:**
+```
+docker container run -it --name container-b --net network-b --publish 8080:80 --entrypoint sh curlimages/curl 
 ```
 
 ## Practice:
