@@ -273,6 +273,50 @@ docker run -it --name my-server -v $(pwd):/var/www/html -p 8080:80 --rm first-we
 
 <br>
 
+## Container Network:
+Docker has network model/package to connecting containers with each other into the outside world.
+
+Docker container uses the bridge docker network by default. The bridge network driver connects docker containers to a virutal bridge network installed on the machine.
+
+### Bridge Network:
+A bridge network is a virtual network device that connects multiple networks together into a single network. Its very usefull to taking traffic from a real network adapter and forwarding it to the virtual network adapters.
+
+### **See Networks:**
+```
+docker network ls
+```
+
+### **Create Network:**
+```
+docker network create network-a
+```
+
+### **Inspect Network:**
+```
+docker network inspect network-a
+```
+
+### **Create Container with Network:**
+```
+docker container create --name container-a --net network-a --entrypoint sh curlimages/curl
+```
+
+### **Create & Run Container with Network:**
+```
+docker container run -it --name container-b --net network-b --entrypoint sh curlimages/curl 
+```
+
+### **Connect Container with Network:**
+```
+docker network connect network-a container-b
+```
+
+## Practice:
+Create two networks called network-a and newtwork-b then create two containers using those networks. Next ping one container from other container like vice versa. If not able to ping each other then connect those two containers under one network. Then try again ping each containers.
+
+
+<br>
+
 # Dockerfile:
 The dockerfile is a language for easily building container images. Dockerfile is the name of the language as well as the default name of the file that docker looks for when creating container images.
 Every docker file consist of a series of instructions.
@@ -548,9 +592,6 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/app  
-
-
-
 ```
 
 ### [Docker compose examples](https://github.com/tarekmonjur/docker-example)
