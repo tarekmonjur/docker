@@ -572,7 +572,8 @@ COPY ./index.html /usr/share/nginx/html/
 EXPOSE 8080
 ```
 
-### Create a docker compose config:
+### Create a docker-compose.yaml file:
+ YAML - Yet Another Markup Language.
 ```
 version: "3.9"
 services:
@@ -582,6 +583,8 @@ services:
       - 8080:80
   db: 
     image: "mysql"
+    env_file:
+      - ./.env_variable
 ```
 
 ### Then run the docker services by using.
@@ -640,7 +643,7 @@ docker-compose ps
 ```
 
 ### Running Frontend and Backend project using docker compose:
-create a docker-compose.yaml file. YAML - Yet Another Markup Language.
+create a docker-compose.yaml file.
 ```
 version: '3'
 
@@ -666,7 +669,7 @@ services:
     container_name: "docker-mongo"
     image: mongo
     volumes:
-      - ./backend/data:/data/db
+      - ./backend/data:/data/db:ro
     ports:
       - 27018:27017
 
@@ -681,7 +684,16 @@ services:
       - ./frontend:/app  
 ```
 
-### [Docker compose examples](https://github.com/tarekmonjur/docker-example)
+## Multiple Compose File:
+* `docker-compose.ymal` is default config file.
+* `docker-compose.override.ymal` is default override file.
+
+### Can be use and run other multiple files.
+```
+docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up
+```
+
+## [Docker compose examples](https://github.com/tarekmonjur/docker-example)
 
 <br>
 

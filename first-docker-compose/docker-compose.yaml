@@ -7,3 +7,5 @@ services:
       - 8080:80
   db: 
     image: "mysql"
+    env_file:
+      - ./.env_variable
